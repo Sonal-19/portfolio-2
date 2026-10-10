@@ -1,0 +1,110 @@
+---
+import SectionHeading from "@/components/SectionHeading.astro";
+import { experience } from "@/data/experience";
+import { profile } from "@/data/profile";
+
+/** Stable fake commit hash from the company name. */
+const hash = (s: string) => {
+  let h = 2166136261;
+  for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
+  return (h >>> 0).toString(16).padStart(8, "0").slice(0, 7);
+};
+const refs = (i: number, current?: boolean) =>
+  i === 0
+    ? "HEAD -> main"
+    : current
+      ? "origin/side-quest"
+      : i === experience.length - 1
+        ? "tag: v0.1"
+        : "";
+---
+
+<section id="experience" data-section="experience" class="relative py-24 md:py-36">
+  <div class="container-x">
+    <SectionHeading
+      index="02"
+      label="experience"
+      lines={["Where I've been", "<span class='text-outline'>committing</span> code."]}
+      note="git log --graph --oneline  ·  newest first"
+    />
+
+    <div data-reveal class="window">
+      <div class="window-bar">
+        <span class="window-dots"><i></i><i></i><i></i></span>
+        <span class="truncate">~/career — git log --graph</span>
+        <span class="ml-auto hidden sm:inline">{experience.length} commits</span>
+      </div>
+
+      <ol data-git class="relative px-4 py-8 sm:px-8 md:py-12">
+        <span
+          data-git-line
+          aria-hidden="true"
+          class="git-line absolute top-10 bottom-10 left-[1.6rem] w-px bg-gradient-to-b from-accent via-cyan to-line sm:left-[2.6rem]"
+        ></span>
+
+        {
+          experience.map((r, i) => (
+            <li data-commit class="relative grid gap-3 pb-12 pl-10 last:pb-0 sm:pl-14 md:grid-cols-[13rem_1fr] md:gap-10">
+              <span
+                data-commit-node
+                aria-hidden="true"
+                class={`absolute top-1 left-[0.95rem] grid size-[1.3rem] place-items-center rounded-full border-2 sm:left-[1.95rem] ${
+                  r.current ? "border-accent bg-bg" : "border-line bg-surface"
+                }`}
+              >
+                <span class={`size-1.5 rounded-full ${r.current ? "bg-accent" : "bg-muted"}`} />
+              </span>
+
+              <div class="font-mono text-xs leading-relaxed">
+                <p>
+                  <span class="text-[#febc2e]">commit </span>
+                  <span data-commit-hash data-hash={hash(r.company)} class="text-[#febc2e]">
+                    {hash(r.company)}
+                  </span>
+                </p>
+                {refs(i, r.current) && (
+                  <p class="mt-1">
+                    <span class="rounded border border-cyan/40 px-1.5 py-0.5 text-[0.65rem] text-cyan">
+                      {refs(i, r.current)}
+                    </span>
+                  </p>
+                )}
+                <p class="mt-2 text-muted">
+                  Date: <span data-commit-date class="text-fg">{r.period}</span>
+                </p>
+                <p class="text-muted">Where: {r.place}</p>
+              </div>
+
+              <div class="min-w-0">
+                <h3 class="font-display text-[clamp(1.4rem,3vw,2.2rem)] font-semibold leading-tight tracking-tight">
+                  <span data-commit-title class="block">{r.role}</span>
+                </h3>
+                <p data-commit-sub class="mt-1 text-muted">
+                  @ <span class="text-fg">{r.company}</span>
+                </p>
+                <ul class="mt-5 space-y-2 font-mono text-[0.8rem] leading-relaxed">
+                  {r.points.map((pt) => (
+                    <li data-commit-diff class="diff-add flex gap-3 rounded-md px-2 py-1">
+                      <span class="select-none">+</span>
+                      <span class="text-fg/90">{pt}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div class="mt-5 flex flex-wrap gap-2">
+                  {r.tags.map((t) => (
+                    <span data-commit-tag class="tag">
+                      #{t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="border-t border-line px-4 py-3 font-mono text-[0.7rem] text-muted sm:px-8">
+        <span class="text-accent">✓</span> {profile.education.degree} — {profile.education.school}
+      </p>
+    </div>
+  </div>
+</section>

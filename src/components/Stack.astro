@@ -1,0 +1,74 @@
+---
+import SectionHeading from "@/components/SectionHeading.astro";
+import { allSkills, skillGroups } from "@/data/skills";
+
+// Decorative tokens that fill out the sphere; the real skills are highlighted.
+const deco = [
+  "GET",
+  "POST",
+  "PUT",
+  "DELETE",
+  "{ }",
+  "</>",
+  "200 OK",
+  "JSON",
+  "$_",
+  "201",
+  "ssh",
+  "npm",
+  "=>",
+  "SQL",
+  "404",
+  "~/",
+];
+const items = [
+  ...allSkills.map((t) => ({ t, main: true })),
+  ...deco.map((t) => ({ t, main: false })),
+];
+---
+
+<section id="stack" data-section="stack" class="relative overflow-hidden py-24 md:py-36">
+  <div class="container-x">
+    <SectionHeading
+      index="03"
+      label="stack"
+      lines={["The tools I", "<span class='text-accent'>reach for.</span>"]}
+      note="Drag the sphere. It spins faster the harder you throw it."
+    />
+
+    <div class="grid items-center gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
+      <div data-reveal>
+        <div data-sphere class="sphere" aria-label="Technologies">
+          <div class="sphere-ring" aria-hidden="true"></div>
+          <div class="sphere-ring !inset-[22%] opacity-60" aria-hidden="true"></div>
+          {
+            items.map((it) => (
+              <span class="sphere-item text-[clamp(0.8rem,2.3vw,1.15rem)]" data-sphere-item {...(it.main ? { "data-main": "" } : { "aria-hidden": "true" })}>
+                {it.t}
+              </span>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        {
+          skillGroups.map((g) => (
+            <div data-reveal class="window">
+              <div class="window-bar !py-2.5">
+                <span class="text-accent">$</span>
+                <span>stack --group {g.cmd}</span>
+                <span class="ml-auto font-display text-sm text-fg">{g.title}</span>
+              </div>
+              <div data-flip class="flex flex-wrap gap-2 p-4 [perspective:600px]">
+                {g.items.map((s) => (
+                  <span class="rounded-lg border border-line bg-surface-2 px-3.5 py-2 font-mono text-sm">{s}</span>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,97 @@
+---
+import { profile } from "@/data/profile";
+
+const lines = ["Let's ship", "something."];
+const roll = (s: string) => [...s];
+const waLink = `https://wa.me/${profile.whatsapp}?text=${encodeURIComponent(
+  "Hi Shivam, I saw your portfolio and would like to talk about a project.",
+)}`;
+---
+
+<section id="contact" data-section="contact" class="relative overflow-hidden py-24 md:py-36">
+  <div class="container-x">
+    <p data-reveal class="label mb-8 flex items-center gap-3">
+      <span class="text-accent">// 05</span><span class="h-px w-10 bg-line" data-draw></span><span>contact</span>
+    </p>
+
+    <h2
+      data-spring
+      class="font-display text-[clamp(3rem,13vw,11rem)] font-bold leading-[0.9] tracking-[-0.045em] select-none"
+      aria-label={lines.join(" ")}
+    >
+      {
+        lines.map((l, li) => (
+          <span class={`block whitespace-nowrap ${li === 1 ? "text-accent" : ""}`} aria-hidden="true">
+            {[...l].map((c) => (
+              <span class="spring-char" data-spring-char>
+                {c === " " ? " " : c}
+              </span>
+            ))}
+          </span>
+        ))
+      }
+    </h2>
+
+    <div class="mt-12 grid gap-10 md:mt-16 lg:grid-cols-[1.2fr_1fr] lg:items-end">
+      <div data-reveal class="min-w-0">
+        <p class="max-w-md text-lg text-muted">
+          You can DM me on Twitter <a href={profile.twitter.href} target="_blank" rel="noopener" class="text-fg underline decoration-accent underline-offset-4">{profile.twitter.handle}</a>, email me, or message me on WhatsApp.
+        </p>
+
+        <div class="window mt-6 max-w-xl">
+          <div class="flex items-center gap-3 p-3 pl-4 sm:pl-5">
+            <code class="min-w-0 flex-1 truncate font-mono text-xs sm:text-sm">
+              <span class="text-accent">$</span> curl -X POST hishivam.com/hello -d <span class="text-cyan">"{profile.email}"</span>
+            </code>
+            <button
+              type="button"
+              data-copy={profile.email}
+              class="relative grid h-9 shrink-0 place-items-center rounded-lg border border-line px-3 font-mono text-xs transition-colors hover:border-accent"
+              aria-label="Copy email address"
+            >
+              <span data-copy-label>copy</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href={`mailto:${profile.email}`} class="btn btn-primary !px-6 !py-4 !text-sm" data-cursor="mail">
+            <span>{profile.email}</span><span class="arrow">→</span>
+          </a>
+          <a
+            href={waLink}
+            target="_blank"
+            rel="noopener"
+            class="btn btn-whatsapp !px-6 !py-4 !text-sm"
+            data-cursor="whatsapp"
+            aria-label={`Message ${profile.firstName} on WhatsApp`}
+          >
+            <svg viewBox="0 0 24 24" class="size-4 shrink-0" fill="currentColor" aria-hidden="true">
+              <path d="M12.04 2a9.9 9.9 0 0 0-8.5 15l-1.4 5 5.1-1.3A9.9 9.9 0 1 0 12.04 2Zm0 18.1a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-3 .8.8-2.95-.2-.31a8.2 8.2 0 1 1 6.9 3.79Zm4.5-6.14c-.25-.12-1.46-.72-1.69-.8-.23-.08-.39-.12-.55.12-.16.25-.63.8-.78.97-.14.16-.29.18-.53.06a6.7 6.7 0 0 1-3.34-2.92c-.25-.43.25-.4.72-1.33.08-.16.04-.3-.02-.43-.06-.12-.55-1.33-.76-1.82-.2-.48-.4-.41-.55-.42h-.47a.9.9 0 0 0-.65.3 2.74 2.74 0 0 0-.86 2.04 4.76 4.76 0 0 0 1 2.53 10.9 10.9 0 0 0 4.17 3.69c1.55.67 2.16.73 2.94.61.47-.07 1.46-.6 1.66-1.17.2-.58.2-1.07.14-1.17-.06-.1-.22-.16-.47-.28Z" />
+            </svg>
+            <span>WhatsApp</span><span class="arrow">→</span>
+          </a>
+        </div>
+      </div>
+
+      <ul data-stagger class="grid min-w-0 grid-cols-2 gap-x-6 sm:grid-cols-3 lg:grid-cols-2">
+        {
+          profile.socials.map((s) => (
+            <li class="border-t border-line">
+              <a href={s.href} target="_blank" rel="noopener" class="flex items-center justify-between py-4 font-display text-lg sm:text-xl">
+                <span class="roll" aria-label={s.label}>
+                  {roll(s.label).map((c, i) => (
+                    <span style={`--i:${i}`} aria-hidden="true">
+                      {c}
+                    </span>
+                  ))}
+                </span>
+                <span class="font-mono text-xs text-muted">↗</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

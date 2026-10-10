@@ -1,0 +1,18 @@
+---
+import Base from "@/layouts/Base.astro";
+---
+
+<Base title="404 · Not found">
+  <section class="container-x flex min-h-[80svh] flex-col justify-center pt-28">
+    <p data-hero-fade class="font-mono text-sm text-muted">
+      <span class="text-[#ff5f57]">HTTP/1.1 404</span> Not Found
+    </p>
+    <h1 data-hero-fade class="mt-4 font-display text-[clamp(3rem,12vw,9rem)] font-bold leading-[0.9] tracking-[-0.04em]">
+      Route not<br /><span class="text-outline">resolved.</span>
+    </h1>
+    <p data-hero-fade class="mt-6 max-w-md text-muted">This endpoint doesn't exist. Let's get you back to a 200.</p>
+    <div data-hero-fade class="mt-8">
+      <a href="/" class="btn btn-primary"><span>GET /</span><span class="arrow">→</span></a>
+    </div>
+  </section>
+</Base>

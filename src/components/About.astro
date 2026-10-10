@@ -1,0 +1,83 @@
+---
+import SectionHeading from "@/components/SectionHeading.astro";
+import { profile } from "@/data/profile";
+
+const highlights = [
+  "Backend & AI Engineer",
+  "machine learning",
+  "REST APIs",
+  "secure authentication",
+  "open source",
+];
+const mark = (s: string) =>
+  highlights.reduce((acc, h) => acc.replace(h, `<mark data-hl>${h}</mark>`), s);
+
+const facts = Object.entries(profile.facts);
+---
+
+<section id="about" data-section="about" class="relative py-24 md:py-36">
+  <div class="container-x">
+    <SectionHeading
+      index="04"
+      label="about"
+      lines={["Developer.", "Problem solver.", "<span class='text-outline'>Learner.</span>"]}
+    />
+
+    <div class="grid gap-6 lg:grid-cols-12 lg:gap-8">
+      <div data-reveal class="window min-w-0 lg:col-span-7">
+        <div class="window-bar">
+          <span class="window-dots"><i></i><i></i><i></i></span>
+          <span class="truncate">shivam@hishivam: ~</span>
+        </div>
+        <div class="p-5 sm:p-8">
+          <p class="font-mono text-xs sm:text-sm">
+            <span class="text-accent">➜</span> <span class="text-cyan">~</span>
+            <span data-type={`cat about.md`}>cat about.md</span><span class="caret"></span>
+          </p>
+          <div class="mt-6 space-y-5 text-[clamp(1rem,1.6vw,1.2rem)] leading-relaxed">
+            {profile.about.map((p, i) => <p data-lines class={i === 0 ? "" : "text-muted"} set:html={mark(p)} />)}
+          </div>
+
+          <p class="mt-8 font-mono text-xs text-muted">## my approach</p>
+          <ul data-stagger class="mt-3 grid gap-2 font-mono text-sm sm:grid-cols-2">
+            {
+              profile.approach.map((a) => (
+                <li class="flex gap-2">
+                  <span class="text-accent">[✓]</span>
+                  {a}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex min-w-0 flex-col gap-6 lg:col-span-5">
+        <div data-reveal class="window">
+          <div class="window-bar">
+            <span class="window-dots"><i></i><i></i><i></i></span>
+            <span>facts.json</span>
+          </div>
+          <div data-json class="overflow-x-auto p-5 font-mono text-[0.78rem] leading-7 sm:p-6 sm:text-sm">
+            <div data-json-line class="w-fit whitespace-pre">{"{"}</div>
+            {
+              facts.map(([k, v], i) => (
+                <div data-json-line class="w-fit whitespace-pre">{"  "}<span class="json-key">"{k}"</span>{": "}{typeof v === "boolean" ? <span class="json-bool">{String(v)}</span> : <span class="json-str">"{v}"</span>}{i < facts.length - 1 ? "," : ""}</div>
+              ))
+            }
+            <div data-json-line class="w-fit whitespace-pre">{"}"}</div>
+          </div>
+        </div>
+
+        <div data-reveal class="relative overflow-hidden rounded-2xl border border-line bg-surface p-6">
+          <p class="label">education</p>
+          <p class="mt-3 font-display text-2xl font-semibold leading-tight">{profile.education.school}</p>
+          <p class="mt-2 text-muted">{profile.education.degree}</p>
+          <span class="absolute -right-4 -bottom-6 font-display text-[7rem] font-bold leading-none text-outline opacity-20" aria-hidden="true">
+            CS
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

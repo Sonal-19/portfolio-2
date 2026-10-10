@@ -1,0 +1,148 @@
+---
+import { ClientRouter } from "astro:transitions";
+import Footer from "@/components/Footer.astro";
+import Cursor from "@/components/islands/Cursor";
+import Nav from "@/components/Nav.astro";
+import { profile } from "@/data/profile";
+import "@/styles/global.css";
+
+type Props = { title?: string; description?: string };
+
+const {
+  title = `${profile.name} · ${profile.title}`,
+  description = profile.summary,
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+const personLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: profile.name,
+  jobTitle: profile.title,
+  url: Astro.site?.toString(),
+  email: `mailto:${profile.email}`,
+  telephone: `+${profile.whatsapp}`,
+  sameAs: profile.socials.map((s) => s.href),
+  alumniOf: profile.education.school,
+};
+
+const bootLines = [
+  { t: "$ ssh shivam@hishivam.com", c: "text-fg" },
+  { t: "→ resolving host .............. ok", c: "text-muted" },
+  { t: "→ loading modules [api, db, ops] ok", c: "text-muted" },
+  { t: "→ warming up the node graph ... ok", c: "text-muted" },
+  { t: "HTTP/1.1 200 OK — welcome.", c: "text-accent" },
+];
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:creator" content={profile.twitter.handle} />
+    <meta name="theme-color" content="#07090d" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    />
+
+    <script type="application/ld+json" set:html={JSON.stringify(personLd)} />
+
+    <!-- Runs before paint: theme + whether motion is allowed + whether the loader was already seen. -->
+    <script is:inline>
+      (() => {
+        const apply = () => {
+          const root = document.documentElement;
+          let theme = null;
+          let seen = false;
+          try {
+            theme = localStorage.getItem("theme");
+            seen = sessionStorage.getItem("boot-seen") === "1";
+          } catch {}
+          root.dataset.theme =
+            theme ?? (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+          root.classList.toggle("js-motion", !matchMedia("(prefers-reduced-motion: reduce)").matches);
+          root.classList.toggle("loader-seen", seen);
+        };
+        apply();
+        document.addEventListener("astro:after-swap", apply);
+      })();
+    </script>
+
+    <ClientRouter />
+  </head>
+  <body class="min-h-dvh">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[300] focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-accent-ink"
+      >Skip to content</a
+    >
+
+    <!-- Boot loader: terminal types, then the tile grid flips away from the centre. -->
+    <div data-loader aria-hidden="true" class="loader fixed inset-0 z-[250]">
+      <div class="loader-tiles">
+        {Array.from({ length: 64 }, () => <div class="loader-tile" data-loader-tile />)}
+      </div>
+      <div class="absolute inset-0 grid place-items-center p-4">
+        <div data-loader-term class="window w-full max-w-md">
+          <div class="window-bar">
+            <span class="window-dots"><i></i><i></i><i></i></span>
+            <span class="truncate">boot — zsh</span>
+            <span class="ml-auto tabular-nums"><span data-loader-count>0</span>%</span>
+          </div>
+          <div class="space-y-1.5 p-4 font-mono text-[0.72rem] sm:p-5 sm:text-xs">
+            {bootLines.map((l) => <p data-loader-line class={`${l.c} whitespace-pre`}>{l.t}</p>)}
+          </div>
+          <div class="h-0.5 bg-line"><div data-loader-bar class="h-full origin-left scale-x-0 bg-accent"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      data-progress
+      aria-hidden="true"
+      class="fixed top-0 right-0 z-[60] hidden h-dvh w-[2px] origin-top scale-y-0 bg-gradient-to-b from-accent to-cyan md:block"
+    >
+    </div>
+    <Nav />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <Cursor client:media="(pointer: fine)" transition:persist />
+
+    <script>
+      import { destroyPage, initPage, scrollToTarget } from "@/lib/animations";
+
+      document.addEventListener("astro:page-load", initPage);
+      document.addEventListener("astro:before-swap", destroyPage);
+
+      // In-page hash links scroll through Lenis.
+      document.addEventListener("click", (e) => {
+        const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"], a[href^="/#"]');
+        if (!a) return;
+        const href = a.getAttribute("href")!;
+        if (href.startsWith("/") && location.pathname !== "/") return;
+        const hash = href.replace(/^\//, "");
+        if (hash.length < 2) return;
+        e.preventDefault();
+        scrollToTarget(hash);
+        history.replaceState(null, "", hash);
+      });
+    </script>
+  </body>
+</html>

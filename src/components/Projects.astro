@@ -1,0 +1,124 @@
+---
+import ProjectCover from "@/components/ProjectCover.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
+import { featured, moreWork, projects } from "@/data/projects";
+
+const pad = (n: number) => String(n).padStart(2, "0");
+---
+
+<section id="projects" data-section="projects" class="relative py-24 md:py-36">
+  <div class="container-x">
+    <SectionHeading
+      index="01"
+      label="projects"
+      lines={["Things I've built", "<span class='text-accent'>&amp; shipped.</span>"]}
+      note={`${projects.length} projects · APIs, platforms and systems built to be fast, secure and easy to maintain.`}
+    />
+
+    <div data-stack class="relative space-y-6 md:space-y-10">
+      {
+        featured.map((p, i) => (
+          <article data-stack-card class="stack-card" style={`--i:${i}`}>
+            <div
+              data-stack-inner
+              class="relative grid overflow-hidden rounded-[1.5rem] border border-line bg-surface p-4 sm:p-6 md:rounded-[2rem] md:p-8 lg:grid-cols-[1fr_1.15fr] lg:gap-10"
+              style={`--cv:${p.accent}`}
+            >
+              <div class="order-2 flex min-w-0 flex-col pt-6 lg:order-1 lg:pt-2">
+                <div class="flex items-center justify-between gap-4">
+                  <span class="shrink-0 font-mono text-xs whitespace-nowrap text-[var(--cv)]">
+                    {pad(i + 1)} / {pad(featured.length)}
+                  </span>
+                  <span class="label truncate !text-[0.65rem]">{p.kicker}</span>
+                </div>
+                <h3 class="mt-5 font-display text-[clamp(1.9rem,4.4vw,3.4rem)] font-semibold leading-[1.02] tracking-[-0.03em]">
+                  {p.title}
+                </h3>
+                <p class="mt-3 font-mono text-xs text-muted">
+                  <span class="text-[var(--cv)]">role:</span> {p.role}
+                  {p.year && <span> · {p.year}</span>}
+                </p>
+                <p class="mt-4 max-w-md text-muted">{p.summary}</p>
+                <div class="mt-5 flex flex-wrap gap-2">
+                  {p.stack.slice(0, 5).map((s) => (
+                    <span class="tag">{s}</span>
+                  ))}
+                </div>
+                <div class="mt-auto flex flex-wrap items-center gap-3 pt-8">
+                  <a href={`/projects/${p.slug}`} class="btn btn-primary" data-cursor="read">
+                    <span>Case study</span>
+                    <span class="arrow">→</span>
+                  </a>
+                  {p.links.slice(0, 2).map((l) => (
+                    <a href={l.href} target="_blank" rel="noopener" class="btn btn-ghost" data-cursor="open">
+                      <span>{l.label}</span>
+                      <span class="arrow">↗</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+              <a
+                href={`/projects/${p.slug}`}
+                class="group order-1 block min-w-0 lg:order-2"
+                aria-label={`${p.title} case study`}
+                data-cursor="view"
+              >
+                <ProjectCover project={p} eager={i === 0} />
+              </a>
+              <div data-stack-dim class="stack-card-dim absolute inset-0" />
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <!-- More work: a grid of compact cards -->
+    <div class="mt-24 md:mt-36">
+      <div class="mb-10 flex flex-wrap items-end justify-between gap-4">
+        <h3 data-wipe class="font-display text-[clamp(1.8rem,4.5vw,3.2rem)] font-semibold leading-none tracking-[-0.03em]">
+          <span class="wipe"><span class="wipe-text">More work</span><span class="wipe-block" aria-hidden="true"></span></span>
+        </h3>
+        <p data-reveal class="font-mono text-xs text-muted">
+          <span class="text-accent">$</span> ls ./projects | wc -l <span class="text-fg">→ {moreWork.length}</span>
+        </p>
+      </div>
+
+      <div data-grid class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+        {
+          moreWork.map((p, i) => (
+            <a
+              href={`/projects/${p.slug}`}
+              data-grid-card
+              data-cursor="view"
+              class="grid-card group relative flex min-w-0 flex-col rounded-[1.25rem] border border-line bg-surface p-3 sm:p-4"
+              style={`--cv:${p.accent}`}
+            >
+              <ProjectCover project={p} sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw" />
+              <div class="flex flex-1 flex-col px-1 pt-5 pb-1">
+                <div class="flex items-center justify-between gap-3 font-mono text-[0.68rem]">
+                  <span class="text-[var(--cv)]">{pad(featured.length + i + 1)}</span>
+                  <span class="truncate text-muted">{p.role}{p.year && ` · ${p.year}`}</span>
+                </div>
+                <h4 class="mt-3 font-display text-xl font-semibold leading-tight tracking-tight sm:text-2xl">
+                  {p.title}
+                </h4>
+                <p class="mt-2 line-clamp-2 text-sm text-muted">{p.summary}</p>
+                <div class="mt-auto flex flex-wrap gap-1.5 pt-4">
+                  {p.stack.slice(0, 3).map((s) => (
+                    <span class="tag !px-2 !py-0.5 !text-[0.65rem]">{s}</span>
+                  ))}
+                </div>
+              </div>
+              <span
+                class="absolute top-6 right-6 grid size-9 place-items-center rounded-full bg-[var(--cv)] text-accent-ink opacity-0 transition-all duration-500 group-hover:rotate-0 group-hover:opacity-100 sm:top-7 sm:right-7 -rotate-45 scale-75 group-hover:scale-100"
+                aria-hidden="true"
+              >
+                ↗
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
